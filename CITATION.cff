@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "alignmap: mapping the AI-alignment literature across venues"
+abstract: >-
+  Clusters alignment-research writing from several venues and tests, with uncertainty and with
+  adjustment for the mix of venues, which subfields gained or lost share between two periods.
+  Includes a method comparison scored against community topic tags.
+version: 0.2.0
+license: MIT
+authors:
+  - family-names: Nzakuna
+    given-names: Pierre Sedi
+repository-code: "https://github.com/sedcore/alignmap"
+keywords:
+  - AI alignment
+  - scientometrics
+  - text embeddings
+  - topic modelling
