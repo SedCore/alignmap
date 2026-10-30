@@ -36,6 +36,7 @@ from .trends import share_by_year, shift_table, shift_table_adjusted, usable_gro
 class RunConfig:
     # corpus
     sources: tuple[str, ...] | None = None  # None keeps every source in the input
+    drop_tags: tuple[str, ...] = ()  # posts carrying any of these community tags are left out
     min_chars: int = 200
     max_chars: int = 3000
     # representation
@@ -128,7 +129,9 @@ def run_pipeline(
     out_dir = Path(out_dir)
     (out_dir / "figures").mkdir(parents=True, exist_ok=True)
 
-    df, stats = build_corpus(records, sources=cfg.sources, min_chars=cfg.min_chars, max_chars=cfg.max_chars)
+    df, stats = build_corpus(
+        records, sources=cfg.sources, min_chars=cfg.min_chars, max_chars=cfg.max_chars, drop_tags=cfg.drop_tags
+    )
     for name, (lo, hi) in (("baseline", cfg.baseline), ("recent", cfg.recent)):
         if not df["year"].between(lo, hi).any():
             raise ValueError(

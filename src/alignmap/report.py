@@ -175,6 +175,7 @@ def write_report(path: Path, ctx: dict) -> None:
     dropped = (
         f"{stats['dropped_source']} from other sources, {stats['dropped_no_date']} without a usable date, "
         f"{stats['dropped_short']} too short, {stats['dropped_duplicate']} duplicates"
+        + (f", {stats['dropped_tag']} excluded by tag" if stats.get("dropped_tag") else "")
     )
     lines += [
         f"**Corpus.** {stats['n_kept']:,} papers kept of {stats['n_input']:,} read ({dropped}). "

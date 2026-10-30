@@ -23,7 +23,9 @@ from sklearn.metrics import adjusted_mutual_info_score, homogeneity_completeness
 # printed in the report, so you can check them.
 GENERIC_TAGS = frozenset(
     {"AI", "Rationality", "World Modeling", "World Optimization", "Practical", "Community", "Site Meta",
-     "Personal Blog", "Open Threads", "Meetups & Local Communities"}
+     "Personal Blog", "Open Threads", "Meetups & Local Communities",
+     # formats, programmes and agendas rather than topics (seen in the first real-data run)
+     "Newsletters", "SERI MATS", "Research Agendas"}
 )
 
 

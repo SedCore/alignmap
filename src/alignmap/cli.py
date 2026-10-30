@@ -1,4 +1,4 @@
-"""Command line: ``alignmap fetch | download | run | compare | demo``."""
+"""Command line: ``alignmap fetch | fetch-forum | download | run | compare | demo``."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from .ard import DEFAULT_SOURCES, KNOWN_SOURCES, download_ard
 from .corpus import build_corpus, collect_inputs, iter_records, write_jsonl
 from .compare import compare_arms, write_compare
 from .fetch import CORE_TERMS, EXTENDED_TERMS, fetch_years
+from .forum import FORUMS, fetch_forums
 from .pipeline import RunConfig, run_pipeline
 from .presets import PRESETS, apply_preset
 from .toy import make_composition_toy, make_toy_records
@@ -31,6 +32,8 @@ def _add_run_options(p: argparse.ArgumentParser) -> None:
     """Every flag defaults to None so that a flag given on the command line overrides a preset."""
     p.add_argument("--preset", choices=list(PRESETS), help="start from a named configuration")
     p.add_argument("--sources", nargs="+", help="keep only these `source` values (e.g. alignmentforum arxiv)")
+    p.add_argument("--drop-tags", nargs="+",
+                   help="leave out posts carrying any of these community tags (e.g. Newsletters)")
     p.add_argument("--embedder", choices=["tfidf", "sbert"])
     p.add_argument("--sbert-model", help="sentence-transformers model for --embedder sbert")
     p.add_argument("--max-seq-length", type=int, help="truncate inputs to this many tokens (sbert)")
@@ -78,6 +81,8 @@ def _config(args, **forced) -> RunConfig:
         updates["sources"] = tuple(args.sources)
     if getattr(args, "tag_exclude", None):
         updates["tag_exclude"] = tuple(args.tag_exclude)
+    if getattr(args, "drop_tags", None):
+        updates["drop_tags"] = tuple(args.drop_tags)
     if getattr(args, "llm_labels", False):
         updates["llm_labels"] = True
     return replace(cfg, **updates, **forced)
@@ -92,6 +97,16 @@ def _cmd_fetch(args) -> int:
     paths = fetch_years(
         range(lo, hi + 1), args.out, terms,
         max_per_year=args.max_per_year, refresh=args.refresh, delay=args.delay,
+    )
+    print(f"\nDone. {len(paths)} files in {args.out}. Next: alignmap run --input {args.out}")
+    return 0
+
+
+def _cmd_fetch_forum(args) -> int:
+    paths = fetch_forums(
+        args.sources, parse_year_range(args.years), args.out,
+        refresh=args.refresh, paging=args.paging, page_size=args.page_size, delay=args.delay,
+        all_posts=args.all_posts, max_text_chars=args.max_text_chars,
     )
     print(f"\nDone. {len(paths)} files in {args.out}. Next: alignmap run --input {args.out}")
     return 0
@@ -127,7 +142,8 @@ def _cmd_compare(args) -> int:
     else:
         arms = {name: apply_preset(base, name) for name in args.presets}
     df, stats = build_corpus(
-        iter_records(files), sources=base.sources, min_chars=base.min_chars, max_chars=base.max_chars
+        iter_records(files), sources=base.sources, min_chars=base.min_chars, max_chars=base.max_chars,
+        drop_tags=base.drop_tags,
     )
     table, used = compare_arms(df, arms, cache_dir=args.cache_dir, n_rounds=args.stability_rounds)
     out = Path(args.out)
@@ -162,6 +178,23 @@ def build_parser() -> argparse.ArgumentParser:
     f.add_argument("--refresh", action="store_true", help="ignore cached years")
     f.add_argument("--out", default="data/raw")
     f.set_defaults(func=_cmd_fetch)
+
+    fo = sub.add_parser(
+        "fetch-forum", help="download recent posts from LessWrong, the Alignment Forum and the EA Forum"
+    )
+    fo.add_argument("--sources", nargs="+", default=list(FORUMS), choices=list(FORUMS))
+    fo.add_argument("--years", default="2021-2026", help="e.g. 2021-2026")
+    fo.add_argument("--paging", choices=["auto", "before", "offset"], default="auto",
+                    help="how to walk back through the posts; auto tests which one the server honours")
+    fo.add_argument("--page-size", type=int, default=50)
+    fo.add_argument("--delay", type=float, default=1.0, help="seconds between requests")
+    fo.add_argument("--all-posts", action="store_true",
+                    help="keep posts that are not about AI too (by default LessWrong and EA Forum posts are "
+                         "kept only if their tags or title mention AI)")
+    fo.add_argument("--max-text-chars", type=int, default=15000, help="characters of each post to keep")
+    fo.add_argument("--refresh", action="store_true", help="fetch again even if the file exists")
+    fo.add_argument("--out", default="data/forums")
+    fo.set_defaults(func=_cmd_fetch_forum)
 
     d = sub.add_parser("download", help="download the AI Alignment Research Dataset (one JSONL per source)")
     d.add_argument("--sources", nargs="+", default=list(DEFAULT_SOURCES), choices=list(KNOWN_SOURCES))

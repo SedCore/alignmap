@@ -152,3 +152,25 @@ def test_download_rejects_unknown_sources():
 def test_cli_requires_a_subcommand():
     with pytest.raises(SystemExit):
         main([])
+
+
+def test_drop_tags_flag_reaches_the_config_and_defaults_to_nothing():
+    assert _config(parse("run", "--input", "x")).drop_tags == ()
+    assert _config(parse("run", "--input", "x", "--drop-tags", "Newsletters", "Open Threads")).drop_tags == (
+        "Newsletters", "Open Threads",
+    )
+    assert _config(parse("compare", "--input", "x", "--drop-tags", "Newsletters")).drop_tags == ("Newsletters",)
+
+
+def test_run_with_drop_tags_excludes_those_posts_and_says_so_in_the_report(tmp_path, toy_records):
+    src = tmp_path / "corpus.jsonl"
+    write_jsonl(toy_records, src)
+    tag = next(t for rec in toy_records for t in (rec.get("tags") or []))
+    n_with_tag = sum(1 for rec in toy_records if tag in (rec.get("tags") or []))
+    assert 0 < n_with_tag < len(toy_records)
+    out = tmp_path / "out"
+    assert main(["run", "--input", str(src), "--out", str(out), "--k", "3", "--drop-tags", tag]) == 0
+    run = json.loads((out / "run.json").read_text(encoding="utf-8"))
+    assert run["corpus"]["dropped_tag"] == n_with_tag
+    assert run["config"]["drop_tags"] == [tag]
+    assert f"{n_with_tag} excluded by tag" in (out / "report.md").read_text(encoding="utf-8")

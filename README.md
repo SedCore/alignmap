@@ -54,16 +54,19 @@ pip install -e ".[dev]"                                 # add ,sbert for neural 
 pytest                                                  # offline
 alignmap demo                                           # synthetic corpus, offline, a few seconds
 
-alignmap download --out data/ard                        # AI Alignment Research Dataset, one JSONL per source (large)
-alignmap fetch --years 2021-2026 --out data/arxiv       # optional: fresh arXiv abstracts (about 3 s between requests)
+# data. The public dataset ends in late 2023, so for 2024-2026 fetch from the sources themselves:
+alignmap fetch --years 2021-2026 --out data/arxiv           # arXiv abstracts (about 3 s between requests)
+alignmap fetch-forum --years 2021-2026 --out data/forums    # LessWrong, Alignment Forum, EA Forum (plain text, AI-related posts)
+alignmap download --out data/ard                            # optional: the AI Alignment Research Dataset (large, to late 2023)
 
 # the question: which subfields changed share, adjusted for venue mix?
-alignmap run --input data/ard data/arxiv --out results/main --preset modern-fast --cache-dir .cache
+alignmap run --input data/arxiv data/forums --out results/main --preset modern-fast --cache-dir .cache \
+    --drop-tags Newsletters
 
 # the method comparison, scored against community tags
 pip install -e ".[modern]"
-alignmap compare --input data/ard data/arxiv --out results/compare --cache-dir .cache \
-    --presets lsa-baseline 2022-style modern-fast
+alignmap compare --input data/arxiv data/forums --out results/compare --cache-dir .cache \
+    --presets lsa-baseline 2022-style modern-fast --drop-tags Newsletters
 ```
 
 Open `results/main/report.md` and `results/compare/compare.md`. Flags given on the command line override a preset, which overrides the defaults.
@@ -71,6 +74,7 @@ Open `results/main/report.md` and `results/compare/compare.md`. Flags given on t
 | Flag | Effect |
 |---|---|
 | `--sources alignmentforum lesswrong arxiv` | keep only these sources |
+| `--drop-tags Newsletters` | leave out posts carrying these community tags (digests mix every topic and form a cluster of their own) |
 | `--k auto --k-range 8 30 2` | choose k by silhouette (k-means) |
 | `--min-cluster-size 0.01` | HDBSCAN minimum cluster size; below 1 it is a fraction of the papers |
 | `--baseline 2021-2022 --recent 2025-2026` | the two periods to compare |
@@ -82,6 +86,10 @@ Open `results/main/report.md` and `results/compare/compare.md`. Flags given on t
 
 `alignmap download` fetches the per-source JSONL files of the AI Alignment Research Dataset (MIT-licensed, hosted on Hugging Face) and writes `ard_manifest.json` with URL, size, SHA-256 and repository commit for each file. Records use one schema (`id, source, title, authors, text, url, date_published`, plus abstract, categories or forum tags where the source has them), and `alignmap fetch` writes arXiv abstracts in the same schema, so sources mix freely.
 The dataset's update schedule is not guaranteed, so every run prints a coverage table (papers per source per year) and warns when a source stops well before the newest one, because a stale source makes its topics look like they declined.
+**Recent data.** The public dataset was last updated in November 2023, so it cannot say anything about 2024-2026. `alignmap fetch-forum` therefore reads the three forums' public GraphQL API (they run the same software) and writes the same schema, with the post text as plain text (no HTML or MathJax). Posts are walked newest first with a short pause between requests. The query repairs itself when a site lacks a field, and a small probe checks that the server honours the paging argument before relying on it; what was used and dropped is written to `manifest_forums.json`. On LessWrong and the EA Forum a post is kept only if its tags or title mention AI (see `AI_PATTERN` in `forum.py`; `--all-posts` switches the filter off); on the Alignment Forum every post is kept. That filter is an assumption that shapes the corpus, and very recent posts may not have been tagged yet, which the title test only partly makes up for.
+
+**Cleaning.** Raw posts carry markup that is not content (image and link URLs, MathJax stylesheets, LaTeX, the plain-text residue of LaTeXML conversion, reference markers). Left in, it dominates TF-IDF and clusters form around formatting; the first real-data smoke run showed exactly this. `clean_text` removes these before anything is embedded. It is a set of heuristics, tested on hand-made examples and on pathological inputs (it must stay linear on very long tokens), not a guarantee: inspect the representative titles and keywords in the report.
+
 Reports and CSVs contain titles, links and cluster labels only, not the full texts. Respect the licences of the underlying sources when you share data.
 
 ## How it works
@@ -110,7 +118,7 @@ JSONL sources ─► clean, de-duplicate ─► embed ─► (UMAP) ─► clust
 - *Planted trend*: interpretability 10% → 40%, agent foundations 35% → 5%, RLHF and governance flat. The pipeline must recover the right clusters, signs and magnitudes and must not flag the flat ones.
 - *Composition drift*: two venues with different topic mixes and a venue mix that drifts. Inside each venue only two topics really change. The pooled analysis must be fooled (a spurious rise), the source-adjusted one must not, and it must still detect the two real changes.
 
-Other tests cover corpus cleaning and de-duplication, HDBSCAN and UMAP behaviour, agreement scores against tags, the embedding cache, a simulated dataset download (checksums, no partial files left after a truncated transfer), the arXiv Atom parser with a fake network, and the LLM path with a fake client.
+Other tests cover corpus cleaning and de-duplication, HDBSCAN and UMAP behaviour, agreement scores against tags, the embedding cache, a simulated dataset download (checksums, no partial files left after a truncated transfer), the arXiv Atom parser and the forum GraphQL fetcher against fake servers (schema differences, paging strategies, retries), the text-cleaning heuristics, and the LLM path with a fake client.
 
 ## Limitations
 
@@ -119,7 +127,8 @@ Other tests cover corpus cleaning and de-duplication, HDBSCAN and UMAP behaviour
 - **Venue adjustment is coarse.** It removes changes in the mix of three venue groups, not other confounders (for example, who writes where, or topic-dependent migration between venues).
 - **Embedding choices matter and are untuned.** The HDBSCAN default (1% of papers) and the UMAP settings are starting points; rerun with other settings before reading a story into one cluster. Intervals reflect sampling of papers only, not the choice of method.
 - **The `2022-style` arm is a reconstruction**, with the UMAP dimension assumed.
-- **Corpus boundaries.** Dataset coverage and update dates differ by source; work outside these venues is not seen.
+- **Corpus boundaries.** Coverage and update dates differ by source; work outside these venues is not seen. The forum AI filter (tags or title) and the arXiv search terms decide what counts as "alignment", and the same arXiv term list is used for every year on purpose, so a subfield cannot look new just because of how the corpus was queried.
+- **Live fetching is lightly tested.** The fetchers are tested against fake servers and checked by hand on a few queries of the real forums, not over a full crawl; check `manifest_forums.json` and the coverage table of each run.
 - **LLM names are unverified paraphrases** and have not been validated against human labels.
 
 ## Roadmap

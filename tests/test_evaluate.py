@@ -79,3 +79,11 @@ def test_agreement_is_nan_when_it_cannot_be_computed():
     assert np.isnan(got["ami"]) and got["coverage"] == 1.0
     got = agreement(np.full(20, -1), truth)
     assert np.isnan(got["ami"]) and got["coverage"] == 0.0
+
+
+def test_formats_and_programmes_are_not_treated_as_topics():
+    # seen in the first real-data run: digests and programme tags are not subfields
+    assert {"Newsletters", "SERI MATS", "Research Agendas"} <= GENERIC_TAGS
+    df = tagged_frame([["Newsletters", "Interpretability"]] * 30 + [["Interpretability"]] * 30)
+    truth, used = tag_labels(df, top=5, min_count=5)
+    assert used == ["Interpretability"] and set(truth) == {"Interpretability"}

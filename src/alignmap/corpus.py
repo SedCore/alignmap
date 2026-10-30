@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import glob
 import hashlib
+import html
 import json
 import re
 from pathlib import Path
@@ -42,6 +43,64 @@ MIN_ABSTRACT_CHARS = 100
 
 _WS = re.compile(r"\s+")
 _NON_ALNUM = re.compile(r"[^a-z0-9]+")
+
+# --- text cleaning -------------------------------------------------------------------------------
+# Raw posts and papers carry a lot of markup that is not content: image and link URLs, MathJax HTML
+# and CSS, LaTeX, the plain-text residue of LaTeXML ("italic_x start_POSTSUBSCRIPT ..."), reference
+# markers. Left in, they dominate TF-IDF and distort embeddings, and clusters form around formatting
+# instead of topics. `clean_text` removes them before anything is embedded.
+_BLOCKS = re.compile(r"<(style|script)\b[^>]*>.*?</\1\s*>", re.I | re.S)
+_TAG = re.compile(r"</?[A-Za-z!][^<>]{0,300}>")
+_MD_IMAGE = re.compile(r"!\[[^\]]{0,200}\]\([^)]{0,500}\)")
+_MD_LINK = re.compile(r"\[([^\]]{1,300})\]\([^)]{0,500}\)")
+_URL = re.compile(r"(?:https?://|www\.)[^\s)\]>\"']+", re.I)
+# Every quantifier below is bounded, and each pattern is anchored so that it cannot be retried from
+# every position of a very long token: raw posts contain `data:` URIs and similar blobs, and an
+# unbounded `\S*` made the cleaning quadratic on them.
+_DOMAIN = re.compile(
+    r"(?<![a-z0-9-])(?:[a-z0-9-]{1,63}\.){1,6}(?:com|org|net|io|edu|ai|co|uk|info|dev|app)\b(?:/[^\s)\]>\"']{0,300})?",
+    re.I,
+)
+_CSS_BODY = re.compile(r"\{[^{}]{0,400}:[^{}]{0,400};[^{}]{0,400}\}")
+_MATHJAX = re.compile(r"\S{0,80}(?:mjx|MJX|mjpage)\S{0,80}")
+# `$...$` only when the dollars hug the formula, so that "costs $5 and later $10" is left alone.
+_LATEX_MATH = re.compile(r"\$\$.{1,400}?\$\$|\$(?=\S)[^$\n]{1,300}?(?<=\S)\$(?!\d)", re.S)
+_LATEX_CMD = re.compile(r"\\[A-Za-z]+\*?")
+_BRACES = re.compile(r"[{}]")
+_LATEXML = re.compile(
+    r"\b(?:start|end)_[A-Z]{3,}\b"
+    r"|\b(?:italic|bold|roman|typewriter|sansserif|caligraphic|blackboard|fraktur|script|normal)_\w+",
+)
+_BIB = re.compile(r"\bbib\.?\w*|\bet\s+al\b\.?|\[\s*\d+(?:\s*[,–-]\s*\d+)*\s*\]")
+
+
+def clean_text(value, window: int | None = None) -> str:
+    """Strip markup, URLs, math and reference residue from raw text; collapse whitespace.
+
+    ``window`` keeps only that many characters of the text *after* ``<style>`` / ``<script>`` blocks
+    have been removed from the whole of it: a MathJax stylesheet can be longer than any window, and
+    cutting inside it would leave raw CSS in the text.
+    """
+    s = str(value or "")
+    if not s:
+        return ""
+    s = _BLOCKS.sub(" ", s)
+    if window is not None:
+        s = s[:window]
+    s = _TAG.sub(" ", s)
+    s = html.unescape(s)
+    s = _MD_IMAGE.sub(" ", s)
+    s = _MD_LINK.sub(r"\1", s)
+    s = _URL.sub(" ", s)
+    s = _DOMAIN.sub(" ", s)
+    s = _CSS_BODY.sub(" ", s)
+    s = _MATHJAX.sub(" ", s)
+    s = _LATEX_MATH.sub(" ", s)
+    s = _LATEX_CMD.sub(" ", s)
+    s = _LATEXML.sub(" ", s)
+    s = _BIB.sub(" ", s)
+    s = _BRACES.sub(" ", s)
+    return _WS.sub(" ", s).strip()
 
 
 def iter_jsonl(path) -> Iterator[dict]:
@@ -132,18 +191,23 @@ def build_corpus(
     sources: Iterable[str] | None = None,
     min_chars: int = 200,
     max_chars: int = 3000,
+    drop_tags: Iterable[str] | None = None,
 ) -> tuple[pd.DataFrame, dict]:
     """Clean raw records into a DataFrame ready for embedding.
 
     * ``sources`` keeps only those ``source`` values (None keeps all).
+    * ``drop_tags`` drops posts carrying any of these community tags (for example digests such as
+      "Newsletters", which mix every topic and form a cluster of their own).
     * The embedded body is the abstract when the record has one (arXiv, Distill), otherwise the
-      first ``max_chars`` characters of the text.
+      start of the text, cleaned with :func:`clean_text` and cut to ``max_chars`` characters.
     * Records with no parsable date, too little text, or duplicated id / title are dropped; for
       duplicates the more specific source wins (see SOURCE_PRIORITY).
     """
     keep_sources = set(sources) if sources else None
+    excluded_tags = set(drop_tags) if drop_tags else set()
     stats: dict = {
         "n_input": 0, "dropped_source": 0, "dropped_no_date": 0, "dropped_short": 0, "dropped_duplicate": 0,
+        "dropped_tag": 0,
     }
     rows: list[dict] = []
 
@@ -159,12 +223,18 @@ def build_corpus(
             stats["dropped_no_date"] += 1
             continue
 
+        tags = _tags(rec.get("tags"))
+        if excluded_tags and excluded_tags.intersection(tags):
+            stats["dropped_tag"] += 1
+            continue
+
         title = _clean(rec.get("title"))
-        abstract = _clean(rec.get("abstract"))
+        abstract = clean_text(rec.get("abstract"))
         if len(abstract) >= MIN_ABSTRACT_CHARS:
             body = abstract[:max_chars]
         else:
-            body = _clean(str(rec.get("text") or "")[: max_chars * 2])[:max_chars]
+            # a longer raw window than we keep, because markup is removed before cutting to max_chars
+            body = clean_text(rec.get("text"), window=max_chars * 6)[:max_chars]
         if len(body) < min_chars:
             stats["dropped_short"] += 1
             continue
@@ -176,7 +246,7 @@ def build_corpus(
             group=SOURCE_GROUPS.get(source, source),
             title=title,
             authors=_authors(rec.get("authors")),
-            tags=_tags(rec.get("tags")),
+            tags=tags,
             text=body,
             url=str(rec.get("url") or ""),
             date=ts,

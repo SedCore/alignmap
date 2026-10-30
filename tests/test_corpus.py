@@ -5,6 +5,7 @@ import pytest
 
 from alignmap.corpus import (
     build_corpus,
+    clean_text,
     collect_inputs,
     coverage_table,
     coverage_warnings,
@@ -202,3 +203,102 @@ def test_collect_inputs_accepts_files_dirs_and_globs(tmp_path):
 def test_build_corpus_accepts_a_generator():
     df, stats = build_corpus(r for r in [rec(1), rec(2)])
     assert isinstance(df, pd.DataFrame) and stats["n_kept"] == 2
+
+
+# --- text cleaning -------------------------------------------------------------------------------
+
+
+def test_clean_text_removes_urls_images_and_keeps_link_text():
+    raw = (
+        "Intro ![fig](https://res.cloudinary.com/lesswrong-2-0/image/upload/v1/abc/def.png) and "
+        "https://www.lesswrong.com/posts/xyz/foo, read [the debate paper](https://arxiv.org/abs/1805.00899) "
+        "or example.com/page for details."
+    )
+    out = clean_text(raw)
+    assert out == "Intro and read the debate paper or for details."  # punctuation glued to a URL goes with it
+    assert "cloudinary" not in out and "http" not in out and "arxiv.org" not in out
+
+
+def test_clean_text_removes_mathjax_html_and_css():
+    raw = (
+        '<style>.mjx-chtml {display: inline-block; line-height: 0;}</style>'
+        '<span class="mjpage"><span class="mjx-math">x</span></span> We study interpretability.'
+    )
+    out = clean_text(raw)
+    assert "mjx" not in out and "display" not in out and "<" not in out
+    assert out.endswith("We study interpretability.")
+
+
+def test_clean_text_removes_latex_latexml_residue_and_reference_markers():
+    out = clean_text(r"Let $f(x)=\sum_i w_i x_i$ and $$E=mc^2$$ hold; \textbf{we} show scaling laws.")
+    assert out == "Let and hold; we show scaling laws."
+    out = clean_text("the loss italic_L start_POSTSUBSCRIPT roman_total end_POSTSUBSCRIPT = bold_x [12, 13] Smith et al. (2020) bib.bib3 works")
+    for junk in ("italic_", "start_POST", "end_POST", "roman_", "bold_", "[12", "bib", "et al"):
+        assert junk not in out
+    assert "the loss" in out and "Smith" in out and "works" in out
+
+
+def test_clean_text_leaves_prices_and_ordinary_prose_alone():
+    prose = "It costs $5 and later $10 for the model, a fair price, e.g. for the alignment team."
+    assert clean_text(prose) == prose
+    assert clean_text(None) == "" and clean_text("") == ""
+    assert clean_text("  many \n\t spaces  ") == "many spaces"
+
+
+def test_clean_text_is_fast_on_pathological_blobs():
+    import time
+
+    blobs = ["a" * 12000, "a-" * 6000, "a." * 6000, "{" * 12000, "[x" * 6000, "$$" + "a" * 12000, "x" * 11990 + "mjx"]
+    start = time.perf_counter()
+    for blob in blobs:
+        clean_text(blob)
+    # these took 0.5-2.5 s each (quadratic regexes) before the quantifiers were bounded
+    assert time.perf_counter() - start < 1.0
+
+
+def test_build_corpus_cleans_the_body_so_markup_does_not_reach_the_embedding():
+    junk = "![x](https://res.cloudinary.com/a/b/c.png) <span class=\"mjx-math\">y</span> "
+    df, _ = build_corpus([rec(1, source="alignmentforum", text=junk * 3 + LONG)])
+    assert "cloudinary" not in df.loc[0, "doc"] and "mjx" not in df.loc[0, "doc"]
+    assert df.loc[0, "text"].startswith("y y y This paper studies")
+
+
+def test_markup_at_the_top_of_a_post_does_not_use_up_the_character_budget():
+    junk = "<style>" + ".mjx-chtml {display: inline-block;} " * 200 + "</style>"
+    df, _ = build_corpus([rec(1, text=junk + LONG)], max_chars=300)
+    assert df.loc[0, "text"].startswith("This paper studies") and len(df.loc[0, "text"]) == 300
+
+
+def test_a_post_that_is_only_markup_is_dropped_as_short():
+    only_junk = "![x](https://res.cloudinary.com/a/b/c.png) " * 50
+    with pytest.raises(ValueError):
+        build_corpus([rec(1, text=only_junk)])
+
+
+def test_cleaned_abstract_is_used_when_long_enough_and_cleaned_too():
+    abstract = ("We prove a bound on $\\epsilon$ for debate, see https://example.org/x. " * 8).strip()
+    df, _ = build_corpus([rec(1, abstract=abstract, text="ignored " * 60)])
+    assert "https" not in df.loc[0, "text"] and "epsilon" not in df.loc[0, "text"]
+    assert df.loc[0, "text"].startswith("We prove a bound")
+
+
+# --- dropping posts by community tag -------------------------------------------------------------
+
+
+def test_drop_tags_leaves_out_posts_carrying_any_listed_tag_and_counts_them():
+    recs = [
+        rec(1, tags=["Newsletters", "AI"]),
+        rec(2, tags=["Interpretability"]),
+        rec(3, tags=[{"name": "Newsletters"}]),
+        rec(4),
+    ]
+    df, stats = build_corpus(recs, drop_tags=["Newsletters"])
+    assert sorted(df["id"]) == ["id2", "id4"]
+    assert stats["dropped_tag"] == 2 and stats["n_kept"] == 2
+
+
+def test_drop_tags_default_keeps_everything_and_reports_zero():
+    df, stats = build_corpus([rec(1, tags=["Newsletters"]), rec(2)])
+    assert len(df) == 2 and stats["dropped_tag"] == 0
+    df, stats = build_corpus([rec(1, tags=["Newsletters"]), rec(2)], drop_tags=[])
+    assert len(df) == 2 and stats["dropped_tag"] == 0
