@@ -264,6 +264,16 @@ def to_record(source: str, origin: str, row: dict, *, max_text_chars: int) -> di
     return rec
 
 
+def _next_window(current: str, last_ts: datetime | None) -> str:
+    """The date window that starts again just after the last post seen (a day of overlap, never a gap)."""
+    if last_ts is None:
+        raise RuntimeError("cannot move the paging window: no dated post seen yet")
+    nxt = (last_ts + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    if nxt >= current:  # one day holds more posts than the offset cap allows: give up loudly
+        raise RuntimeError(f"more than the server's offset cap of posts on {last_ts:%Y-%m-%d}; lower --page-size")
+    return nxt
+
+
 def is_about_ai(rec: dict, row: dict) -> bool:
     return bool(row.get("af")) or any(AI_PATTERN.search(t) for t in rec["tags"]) or bool(AI_PATTERN.search(rec["title"]))
 
@@ -279,10 +289,17 @@ def fetch_source(
     all_posts: bool = False,
     max_text_chars: int = 15000,
     max_posts: int = 200_000,
+    max_skip: int = 1000,
     sleep=time.sleep,
     log=print,
 ) -> tuple[list[dict], dict]:
     """Page through one forum, newest first, until the posts are older than ``years[0]``.
+
+    In ``offset`` mode the offset is counted inside a date window (``before: "YYYY-MM-DD"``): the
+    servers refuse large offsets ("Exceeded maximum value for skip", seen above ~2000 on the
+    Alignment Forum), so when the offset would pass ``max_skip`` the window moves to the day after
+    the last post seen and the offset restarts at 0. The overlap of up to a day is removed by id.
+    A bare date is what the live servers accept in ``before``.
 
     Returns the kept records and a dict of what happened (counts, strategy, dropped fields).
     """
@@ -298,17 +315,34 @@ def fetch_source(
     counts: Counter = Counter()
     seen: set[str] = set()
     kept: list[dict] = []
+    last_ts: datetime | None = None
     offset = 0
-    cursor = end.strftime("%Y-%m-%dT%H:%M:%S.000Z") if mode == "before" else None
+    if mode == "before":
+        cursor = end.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    else:
+        cursor = end.strftime("%Y-%m-%d")  # date window for offset paging; starts at the end of the range
+    prev_ids: list[str] = []
     while len(seen) < max_posts:
-        rows = client.page(page_size, offset=offset if mode == "offset" else None, before=cursor)
+        if mode == "offset" and offset + page_size > max_skip and prev_ids:
+            cursor, offset = _next_window(cursor, last_ts), 0
+            counts["windows"] += 1
+        try:
+            rows = client.page(page_size, offset=offset if mode == "offset" else None, before=cursor)
+        except RuntimeError as exc:
+            if mode == "offset" and "skip" in str(exc).lower() and offset > 0:
+                cursor, offset = _next_window(cursor, last_ts), 0  # the server's cap is lower than max_skip
+                counts["windows"] += 1
+                continue
+            raise
         if not rows:
             break
-        fresh = [r for r in rows if r.get("_id") not in seen]
-        if not fresh:
-            log(f"  {source}: a page with nothing new; stopping")
+        if _ids(rows) == prev_ids:  # the server ignored the paging argument: same page again
+            log(f"  {source}: the same page came back twice; stopping")
             counts["stalled"] += 1
             break
+        prev_ids = _ids(rows)
+        fresh = [r for r in rows if r.get("_id") not in seen]
+        last_ts = _parse_time(rows[-1].get("postedAt")) or last_ts
         reached_start = False
         for row in fresh:
             seen.add(row["_id"])

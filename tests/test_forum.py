@@ -17,7 +17,7 @@ class FakeForum:
     """Serves ``n`` posts, newest first, one every ``step_days`` days. Even-numbered posts are about AI."""
 
     def __init__(self, n=120, step_days=10, unsupported=(), honours_offset=True, honours_before=True, max_limit=None,
-                 before_errors=False):
+                 before_errors=False, max_skip=None):
         base = pd.Timestamp("2026-10-20T12:00:00Z")
         self.rows = []
         for i in range(n):
@@ -35,6 +35,7 @@ class FakeForum:
         self.unsupported = list(unsupported)
         self.honours_offset, self.honours_before, self.max_limit = honours_offset, honours_before, max_limit
         self.before_errors = before_errors
+        self.max_skip = max_skip
         self.queries: list[str] = []
 
     def __call__(self, url, payload):
@@ -43,12 +44,14 @@ class FakeForum:
         bad = [(f, t) for f, t in self.unsupported if re.search(rf"\b{f}\b", q)]
         if bad:
             return {"errors": [{"message": f'Cannot query field "{f}" on type "{t}".'} for f, t in bad]}
-        if self.before_errors and "before:" in q:  # as the live EA Forum did for a full timestamp
+        if self.before_errors and re.search(r'before: "\d{4}-\d\d-\d\dT', q):  # live servers refuse a full timestamp
             return {"errors": [{"message": "Invalid value for 'before'"}]}
         limit = int(re.search(r"limit: (\d+)", q).group(1))
         if self.max_limit:
             limit = min(limit, self.max_limit)
         off = re.search(r"offset: (\d+)", q)
+        if self.max_skip is not None and off and int(off.group(1)) > self.max_skip:  # as the live forums do
+            return {"errors": [{"message": "Exceeded maximum value for skip"}]}
         before = re.search(r'before: "([^"]+)"', q)
         rows = self.rows
         if before and self.honours_before:
@@ -135,7 +138,9 @@ def test_a_range_ending_before_the_newest_posts_skips_the_newer_ones():
     fake = FakeForum()
     recs, info = run(fake, years=(2024, 2025), paging="offset")
     assert {r["date_published"][:4] for r in recs} <= {"2024", "2025"}
-    assert info["counts"]["newer_than_range"] > 0
+    assert [r["id"] for r in recs] == [f"lesswrong:{i}" for i in fake.ai_ids_between(2024, 2025)]
+    assert not info["counts"].get("newer_than_range")  # the date window starts at the end of the range
+    assert 'before: "2026-01-01"' in fake.queries[-1]
     recs2, info2 = run(FakeForum(), years=(2024, 2025), paging="before")
     assert [r["id"] for r in recs2] == [r["id"] for r in recs]
     assert not info2["counts"].get("newer_than_range")  # the cursor jumped straight to the end of the range
@@ -150,7 +155,7 @@ def test_a_server_that_caps_the_page_size_is_still_walked_to_the_end():
 def test_auto_prefers_offset_and_falls_back_to_the_date_cursor():
     fake = FakeForum()
     assert run(fake, paging="auto")[1]["paging"] == "offset"
-    assert not any("before:" in q for q in fake.queries)  # a verified strategy needs no second opinion
+    assert not any(re.search(r'before: "[^"]*T', q) for q in fake.queries)  # no timestamp cursor probe needed
     assert run(FakeForum(honours_offset=False), paging="auto")[1]["paging"] == "before"
 
 
@@ -383,3 +388,27 @@ def test_the_alignment_forum_is_not_ai_filtered_and_says_so_in_the_manifest(tmp_
     forum.fetch_forums(["alignmentforum"], (2025, 2026), tmp_path, post=fake, delay=0, sleep=lambda s: None, log=lambda *a: None)
     info = json.loads((tmp_path / "manifest_forums.json").read_text(encoding="utf-8"))["sources"]["alignmentforum"]
     assert info["ai_filter"] is False and info["counts"].get("not_about_ai", 0) == 0
+
+
+# --- the offset cap of the live servers ----------------------------------------------------------
+
+
+def test_offset_paging_moves_its_date_window_before_the_server_cap_and_loses_nothing():
+    fake = FakeForum(n=600, step_days=1, max_skip=40)
+    recs, info = run(fake, years=(2025, 2026), paging="offset", page_size=10, max_skip=30)
+    assert [r["id"] for r in recs] == [f"lesswrong:{i}" for i in fake.ai_ids_between(2025, 2026)]
+    assert info["counts"]["windows"] > 5
+    assert not any("Exceeded" in str(q) for q in fake.queries)
+
+
+def test_offset_paging_recovers_when_the_server_cap_is_lower_than_expected():
+    fake = FakeForum(n=600, step_days=1, max_skip=25)
+    recs, info = run(fake, years=(2025, 2026), paging="offset", page_size=10, max_skip=1000)
+    assert [r["id"] for r in recs] == [f"lesswrong:{i}" for i in fake.ai_ids_between(2025, 2026)]
+    assert info["counts"]["windows"] > 5
+
+
+def test_many_posts_on_one_day_is_a_clear_error_not_a_silent_gap():
+    fake = FakeForum(n=200, step_days=0.01, max_skip=20)  # ~100 posts a day
+    with pytest.raises(RuntimeError, match="offset cap"):
+        run(fake, years=(2020, 2026), paging="offset", page_size=10, max_skip=20)
