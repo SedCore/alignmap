@@ -9,8 +9,8 @@ abstract: >-
 version: 0.2.0
 license: MIT
 authors:
-  - family-names: Nzakuna
-    given-names: Pierre Sedi
+  - family-names: Sedi Nzakuna
+    given-names: Pierre
 repository-code: "https://github.com/sedcore/alignmap"
 keywords:
   - AI alignment
