@@ -1,0 +1,4 @@
+arm,embedder,clustering,n_clusters,noise_fraction,seconds,stability_ari,tags_n_tagged,tags_n_evaluated,tags_coverage,tags_ami,tags_homogeneity,tags_completeness,tags_v_measure
+lsa k=20,tfidf+lsa,no reduction → k-means (k=20),20,0.0,5.2,0.6074658664604698,6482,6482,1.0,0.25718102196506737,0.2483522725438403,0.2909586698002594,0.2679724855837345
+specter UMAP k=20,sentence-transformers/allenai-specter,"UMAP(5d, n_neighbors=250) → k-means (k=20)",20,0.0,157.9,0.6444323372390675,6482,6482,1.0,0.23452224625498835,0.23223596893060588,0.25982862060021944,0.24525866215461398
+bge-small UMAP k=20,BAAI/bge-small-en-v1.5,"UMAP(10d, n_neighbors=30) → k-means (k=20)",20,0.0,35.3,0.6167225944061366,6482,6482,1.0,0.2984884678176826,0.28907123443782384,0.3308700385365168,0.30856151912376384

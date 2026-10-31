@@ -1,0 +1,184 @@
+{
+  "alignmap": "0.2.0",
+  "python": "3.13.5",
+  "numpy": "2.5.4",
+  "pandas": "3.1.0",
+  "scikit-learn": "1.9.1",
+  "config": {
+    "sources": null,
+    "drop_tags": [
+      "Newsletters"
+    ],
+    "min_chars": 200,
+    "max_chars": 3000,
+    "embedder": "sbert",
+    "dims": 128,
+    "sbert_model": "BAAI/bge-small-en-v1.5",
+    "max_seq_length": 512,
+    "doc_format": "plain",
+    "doc_prefix": "",
+    "reducer": "umap",
+    "umap_components": 10,
+    "umap_neighbors": 30,
+    "clusterer": "kmeans",
+    "k": 20,
+    "k_range": [
+      8,
+      30,
+      2
+    ],
+    "min_cluster_size": 0.01,
+    "baseline": [
+      2021,
+      2022
+    ],
+    "recent": [
+      2025,
+      2026
+    ],
+    "min_group_docs": 30,
+    "seed": 0,
+    "n_boot": 5000,
+    "top_keywords": 8,
+    "n_representatives": 5,
+    "tag_top": 30,
+    "tag_exclude": [
+      "AI",
+      "Community",
+      "Meetups & Local Communities",
+      "Newsletters",
+      "Open Threads",
+      "Personal Blog",
+      "Practical",
+      "Rationality",
+      "Research Agendas",
+      "SERI MATS",
+      "Site Meta",
+      "World Modeling",
+      "World Optimization"
+    ],
+    "llm_labels": false,
+    "llm_model": null
+  },
+  "provenance": {
+    "inputs": [
+      {
+        "path": "data/arxiv/arxiv_core_2021.jsonl",
+        "sha256": "9748987eebb53d0c844f971960891fc53545ef589b1b3895e57ae1e5ac83c4f9"
+      },
+      {
+        "path": "data/arxiv/arxiv_core_2022.jsonl",
+        "sha256": "93f7748065627827752fbcc80fcb30b683768b17fdd1a910be1a4de0f8cc0683"
+      },
+      {
+        "path": "data/arxiv/arxiv_core_2023.jsonl",
+        "sha256": "40775b9fc6ce1fdffd47af58c7258e669efc51cb6405fd8e953e0a614565c5a8"
+      },
+      {
+        "path": "data/arxiv/arxiv_core_2024.jsonl",
+        "sha256": "f13396dbca3dc57bf44435db4eb5dd0626cfb751e6bd565f4c04063a7475b230"
+      },
+      {
+        "path": "data/arxiv/arxiv_core_2025.jsonl",
+        "sha256": "2fee92bc4c77cd7534d047bae2bdce5d31872b8c821ab5d4c20cf003b499a00a"
+      },
+      {
+        "path": "data/arxiv/arxiv_core_2026.jsonl",
+        "sha256": "02828445977c31b5dc25eda27e6c4b992932395d5f51025cf75851b71c739333"
+      },
+      {
+        "path": "data/forums/alignmentforum_2021-2026.jsonl",
+        "sha256": "ebed3680eb5a1252345fb1c8651a74c5bc25cf84b0d73ef4b486385d9f72312c"
+      },
+      {
+        "path": "data/forums/lesswrong_2021-2026.jsonl",
+        "sha256": "d41e60f60c925967111b7b3131296534901283a7d0d8b4c0b66ed8a6fead33bd"
+      }
+    ]
+  },
+  "corpus": {
+    "n_input": 22698,
+    "dropped_source": 0,
+    "dropped_no_date": 0,
+    "dropped_short": 437,
+    "dropped_duplicate": 3160,
+    "dropped_tag": 292,
+    "n_kept": 18809,
+    "by_source": {
+      "lesswrong": 11960,
+      "arxiv": 3787,
+      "alignmentforum": 3062
+    },
+    "by_group": {
+      "forum": 15022,
+      "papers": 3787
+    },
+    "by_year": {
+      "2021": 900,
+      "2022": 1972,
+      "2023": 3330,
+      "2024": 2825,
+      "2025": 4506,
+      "2026": 5276
+    },
+    "last_date_by_source": {
+      "alignmentforum": "2026-10-27",
+      "arxiv": "2026-10-29",
+      "lesswrong": "2026-10-30"
+    }
+  },
+  "clustering": "UMAP(10d, n_neighbors=30) \u2192 k-means (k=20)",
+  "n_clusters": 20,
+  "noise_fraction": 0.0,
+  "k_scan": {},
+  "silhouette": 0.015347997657954693,
+  "stability_ari": 0.6218553535853177,
+  "tag_agreement": {
+    "n_tagged": 6482,
+    "n_evaluated": 6482,
+    "coverage": 1.0,
+    "ami": 0.2984884678176826,
+    "homogeneity": 0.28907123443782384,
+    "completeness": 0.3308700385365168,
+    "v_measure": 0.30856151912376384
+  },
+  "tags_used": [
+    "Interpretability (ML & AI)",
+    "AI Risk",
+    "Language Models (LLMs)",
+    "AI Governance",
+    "AI Control",
+    "Machine Learning  (ML)",
+    "AI Timelines",
+    "MATS Program",
+    "AI Evaluations",
+    "AI Alignment Fieldbuilding",
+    "GPT",
+    "Existential risk",
+    "Outer Alignment",
+    "Inner Alignment",
+    "Deceptive Alignment",
+    "AI Takeoff",
+    "Agent Foundations",
+    "Fiction",
+    "OpenAI",
+    "Sparse Autoencoders (SAEs)",
+    "Ethics & Morality",
+    "Reinforcement learning",
+    "Forecasting & Prediction",
+    "Logic & Mathematics",
+    "Corrigibility",
+    "AI Capabilities",
+    "ChatGPT",
+    "Economics",
+    "Chain-of-Thought Alignment",
+    "Agency"
+  ],
+  "seconds_embed_and_cluster": 85.1,
+  "source_adjusted": true,
+  "groups_used": [
+    "forum",
+    "papers"
+  ],
+  "groups_excluded": []
+}

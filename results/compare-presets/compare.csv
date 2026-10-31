@@ -1,0 +1,4 @@
+arm,embedder,clustering,n_clusters,noise_fraction,seconds,stability_ari,tags_n_tagged,tags_n_evaluated,tags_coverage,tags_ami,tags_homogeneity,tags_completeness,tags_v_measure
+lsa-baseline,tfidf+lsa,no reduction → k-means (k=20),20,0.0,42.4,0.6074658664604698,6482,6482,1.0,0.25718102196506737,0.2483522725438403,0.2909586698002594,0.2679724855837345
+2022-style,sentence-transformers/allenai-specter,"UMAP(5d, n_neighbors=250) → k-means (k=5)",5,0.0,13443.5,0.8309372218788232,6482,6482,1.0,0.1694800996043134,0.12508452087689673,0.2786213981930313,0.17265649302005706
+modern-fast,BAAI/bge-small-en-v1.5,"UMAP(10d, n_neighbors=30) → HDBSCAN (min_cluster_size=1.0% of documents)",11,0.5923759902174491,37.5,0.9927398656981933,6482,2502,0.3859919777846344,0.40961383617860575,0.351774149697125,0.5320960490078414,0.4235410029010664

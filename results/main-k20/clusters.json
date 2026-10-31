@@ -1,0 +1,922 @@
+[
+  {
+    "id": 0,
+    "label": "C00 · interpretability, features, model",
+    "name": "interpretability, features, model",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "interpretability",
+      "features",
+      "model",
+      "mechanistic",
+      "neural",
+      "models",
+      "feature",
+      "sparse"
+    ],
+    "n": 1691,
+    "share": 0.08990376947206125,
+    "representatives": [
+      {
+        "title": "Interpretability as Compression: Reconsidering SAE Explanations of Neural Activations with MDL-SAEs",
+        "url": "https://www.lesswrong.com/posts/G2oyFQFTE5eGEas6m/interpretability-as-compression-reconsidering-sae",
+        "year": 2024
+      },
+      {
+        "title": "Interpretability in Parameter Space: Minimizing Mechanistic Description Length with Attribution-based Parameter Decomposition",
+        "url": "https://arxiv.org/abs/2501.14926",
+        "year": 2025
+      },
+      {
+        "title": "Mechanistic Interpretability for Neural Networks: Circuits, Sparse Features and Symbolic Reasoning",
+        "url": "https://arxiv.org/abs/2607.07316",
+        "year": 2026
+      },
+      {
+        "title": "Transcoders enable fine-grained interpretable circuit analysis for language models",
+        "url": "https://www.alignmentforum.org/posts/YmkjnWtZGLbHRbzrP/transcoders-enable-fine-grained-interpretable-circuit",
+        "year": 2024
+      },
+      {
+        "title": "Unboxing the Black Box: Mechanistic Interpretability for Algorithmic Understanding of Neural Networks",
+        "url": "https://arxiv.org/abs/2511.19265",
+        "year": 2025
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "label": "C01 · agi, risk, people",
+    "name": "agi, risk, people",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "agi",
+      "risk",
+      "people",
+      "humans",
+      "human",
+      "think",
+      "world",
+      "humanity"
+    ],
+    "n": 1458,
+    "share": 0.07751608272635441,
+    "representatives": [
+      {
+        "title": "Worlds where I wouldn't worry about AI risk",
+        "url": "https://www.lesswrong.com/posts/PqXsj5MHWryBDwxMC/worlds-where-i-wouldn-t-worry-about-ai-risk",
+        "year": 2023
+      },
+      {
+        "title": "[LQ] Some Thoughts on Messaging Around AI Risk",
+        "url": "https://www.lesswrong.com/posts/eJrMaGZGut4Qaefsj/lq-some-thoughts-on-messaging-around-ai-risk",
+        "year": 2022
+      },
+      {
+        "title": "Reshaping the AI Industry",
+        "url": "https://www.alignmentforum.org/posts/mF8dkhZF9hAuLHXaD/reshaping-the-ai-industry",
+        "year": 2022
+      },
+      {
+        "title": "Where I agree and disagree with Eliezer",
+        "url": "https://www.alignmentforum.org/posts/CoZhXrhpQxpy9xw9y/where-i-agree-and-disagree-with-eliezer",
+        "year": 2022
+      },
+      {
+        "title": "AI as a natural disaster",
+        "url": "https://www.lesswrong.com/posts/hsLRGwLnmkpHhvMuf/ai-as-a-natural-disaster-Edta",
+        "year": 2024
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "label": "C02 · reward, learning, rlhf",
+    "name": "reward, learning, rlhf",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "reward",
+      "learning",
+      "rlhf",
+      "preference",
+      "reinforcement",
+      "human",
+      "feedback",
+      "models"
+    ],
+    "n": 1282,
+    "share": 0.06815886012015525,
+    "representatives": [
+      {
+        "title": "Reinforcement Learning from Human Feedback: A Statistical Perspective",
+        "url": "https://arxiv.org/abs/2604.02507",
+        "year": 2026
+      },
+      {
+        "title": "RLHF Deciphered: A Critical Analysis of Reinforcement Learning from Human Feedback for LLMs",
+        "url": "https://arxiv.org/abs/2404.08555",
+        "year": 2024
+      },
+      {
+        "title": "Solving the Inverse Alignment Problem for Efficient RLHF",
+        "url": "https://arxiv.org/abs/2412.10529",
+        "year": 2024
+      },
+      {
+        "title": "From RLHF to Direct Alignment: A Theoretical Unification of Preference Learning for Large Language Models",
+        "url": "https://arxiv.org/abs/2601.06108",
+        "year": 2026
+      },
+      {
+        "title": "Secrets of RLHF in Large Language Models Part II: Reward Modeling",
+        "url": "https://arxiv.org/abs/2401.06080",
+        "year": 2024
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "label": "C03 · model, models, reasoning",
+    "name": "model, models, reasoning",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "model",
+      "models",
+      "reasoning",
+      "training",
+      "cot",
+      "safety",
+      "llms",
+      "reward"
+    ],
+    "n": 1221,
+    "share": 0.06491573183050667,
+    "representatives": [
+      {
+        "title": "AI Safety at the Frontier: Paper Highlights, July '25",
+        "url": "https://www.lesswrong.com/posts/CtWQiQzqJX3EGAFs6/ai-safety-at-the-frontier-paper-highlights-july-25",
+        "year": 2025
+      },
+      {
+        "title": "Adversarial Pragmatics for AI Safety Evaluation: A Diagnostic Framework and Seed Benchmark for Language-Mediated Control",
+        "url": "https://arxiv.org/abs/2607.01153",
+        "year": 2026
+      },
+      {
+        "title": "Assessing Domain-Level Susceptibility to Emergent Misalignment from Narrow Finetuning",
+        "url": "https://arxiv.org/abs/2602.00298",
+        "year": 2026
+      },
+      {
+        "title": "Where Did It Go Wrong? Attributing Undesirable LLM Behaviors via Representation Gradient Tracing",
+        "url": "https://arxiv.org/abs/2510.02334",
+        "year": 2025
+      },
+      {
+        "title": "Building Safer AI from the Ground Up: Steering Model Behavior via Pre-Training Data Curation",
+        "url": "https://www.lesswrong.com/posts/wopNDxxizjY6sMbpd/building-safer-ai-from-the-ground-up-steering-model-behavior",
+        "year": 2024
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "label": "C04 · alignment, research, problem",
+    "name": "alignment, research, problem",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "alignment",
+      "research",
+      "problem",
+      "agi",
+      "work",
+      "post",
+      "think",
+      "like"
+    ],
+    "n": 1201,
+    "share": 0.06385241107980222,
+    "representatives": [
+      {
+        "title": "Research request (alignment strategy): Deep dive on \"making AI solve alignment for us\"",
+        "url": "https://www.alignmentforum.org/posts/amoS8fGYsRKo6Wsdd/research-request-alignment-strategy-deep-dive-on-making-ai",
+        "year": 2022
+      },
+      {
+        "title": "A Case for the Least Forgiving Take On Alignment",
+        "url": "https://www.alignmentforum.org/posts/3JRBqRtHBDyPE3sGa/a-case-for-the-least-forgiving-take-on-alignment",
+        "year": 2023
+      },
+      {
+        "title": "All technical alignment plans are steps in the dark",
+        "url": "https://www.lesswrong.com/posts/QygXWZbncbveZhWqH/all-technical-alignment-plans-are-steps-in-the-dark",
+        "year": 2026
+      },
+      {
+        "title": "My understanding of the alignment problem",
+        "url": "https://www.alignmentforum.org/posts/WckCfXpfrb9Bms8aA/my-understanding-of-the-alignment-problem",
+        "year": 2021
+      },
+      {
+        "title": "Three Alignment Schemas & Their Problems",
+        "url": "https://www.lesswrong.com/posts/YL2RpsCsFuDBgz4HS/three-alignment-schemas-and-their-problems",
+        "year": 2022
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "label": "C05 · agi, compute, time",
+    "name": "agi, compute, time",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "agi",
+      "compute",
+      "time",
+      "human",
+      "progress",
+      "intelligence",
+      "years",
+      "timelines"
+    ],
+    "n": 1090,
+    "share": 0.05795098091339253,
+    "representatives": [
+      {
+        "title": "Takes and loose predictions on AI progress and some key problems",
+        "url": "https://www.lesswrong.com/posts/KYghMi7cYCM5z76Lt/takes-and-loose-predictions-on-ai-progress-and-some-key",
+        "year": 2025
+      },
+      {
+        "title": "A Bear Case: My Predictions Regarding AI Progress",
+        "url": "https://www.lesswrong.com/posts/oKAFFvaouKKEhbBPm/a-bear-case-my-predictions-regarding-ai-progress",
+        "year": 2025
+      },
+      {
+        "title": "BCIs and the ecosystem of modular minds",
+        "url": "https://www.lesswrong.com/posts/d74pb97TAqNKwJkc5/bcis-and-the-ecosystem-of-modular-minds",
+        "year": 2023
+      },
+      {
+        "title": "What Indicators Should We Watch to Disambiguate AGI Timelines?",
+        "url": "https://www.lesswrong.com/posts/auGYErf5QqiTihTsJ/what-indicators-should-we-watch-to-disambiguate-agi",
+        "year": 2025
+      },
+      {
+        "title": "AI in 2025: gestalt",
+        "url": "https://www.lesswrong.com/posts/Q9ewXs8pQSAX5vL7H/ai-in-2025-gestalt",
+        "year": 2025
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "label": "C06 · gpt, claude, chatgpt",
+    "name": "gpt, claude, chatgpt",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "gpt",
+      "claude",
+      "chatgpt",
+      "like",
+      "model",
+      "just",
+      "people",
+      "prompt"
+    ],
+    "n": 998,
+    "share": 0.053059705460152054,
+    "representatives": [
+      {
+        "title": "Briefly how I've updated since ChatGPT",
+        "url": "https://www.lesswrong.com/posts/3DyXQkkkGnSgy95ex/briefly-how-i-ve-updated-since-chatgpt",
+        "year": 2023
+      },
+      {
+        "title": "Shh, don't tell the AI it's likely to be evil",
+        "url": "https://www.lesswrong.com/posts/RAA6oH34eTMYb5CGo/shh-don-t-tell-the-ai-it-s-likely-to-be-evil",
+        "year": 2022
+      },
+      {
+        "title": "How did LW update p(doom) after LLMs blew up?",
+        "url": "https://www.lesswrong.com/posts/XaQ8fbXXeZAHqu5f6/how-did-lw-update-p-doom-after-llms-blew-up",
+        "year": 2023
+      },
+      {
+        "title": "So You Think You've Awoken ChatGPT",
+        "url": "https://www.lesswrong.com/posts/2pkNCvBtK6G6FKoNn/so-you-think-you-ve-awoken-chatgpt",
+        "year": 2025
+      },
+      {
+        "title": "Claude vs GPT",
+        "url": "https://www.lesswrong.com/posts/ZJebMaEae8aPkB3wX/claude-vs-gpt",
+        "year": 2024
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "label": "C07 · human, consciousness, humans",
+    "name": "human, consciousness, humans",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "human",
+      "consciousness",
+      "humans",
+      "like",
+      "alignment",
+      "moral",
+      "intelligence",
+      "think"
+    ],
+    "n": 942,
+    "share": 0.05008240735817959,
+    "representatives": [
+      {
+        "title": "Trying to deconfuse some core AI x-risk problems",
+        "url": "https://www.lesswrong.com/posts/K8jJpdfKE3racyziC/trying-to-deconfuse-some-core-ai-x-risk-problems",
+        "year": 2023
+      },
+      {
+        "title": "What Does It Mean to Align AI With Human Values?",
+        "url": "https://www.lesswrong.com/posts/edfYvh4cZLXHJ2joh/what-does-it-mean-to-align-ai-with-human-values",
+        "year": 2022
+      },
+      {
+        "title": "Cooperationism: first draft for a moral framework that does not require consciousness",
+        "url": "https://www.lesswrong.com/posts/MvJepRWhvdcvhL5fo/cooperationism-first-draft-for-a-moral-framework-that-does",
+        "year": 2026
+      },
+      {
+        "title": "AI strategy given the need for good reflection",
+        "url": "https://www.lesswrong.com/posts/JbAMRKFNcBwgvPpyk/ai-strategy-given-the-need-for-good-reflection",
+        "year": 2024
+      },
+      {
+        "title": "Aligning Superintelligent Humans",
+        "url": "https://www.lesswrong.com/posts/KWZGTtnMuTHfBMdyX/aligning-superintelligent-humans",
+        "year": 2026
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "label": "C08 · safety, risk, people",
+    "name": "safety, risk, people",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "safety",
+      "risk",
+      "people",
+      "think",
+      "governance",
+      "like",
+      "risks",
+      "policy"
+    ],
+    "n": 935,
+    "share": 0.04971024509543304,
+    "representatives": [
+      {
+        "title": "The Sorry State of AI X-Risk Advocacy, and Thoughts on Doing Better",
+        "url": "https://www.lesswrong.com/posts/6dgCf92YAMFLM655S/the-sorry-state-of-ai-x-risk-advocacy-and-thoughts-on-doing",
+        "year": 2025
+      },
+      {
+        "title": "Someone should fund an AGI Blockbuster",
+        "url": "https://www.lesswrong.com/posts/4unfQYGQ7StDyXAfi/someone-should-fund-an-agi-blockbuster",
+        "year": 2025
+      },
+      {
+        "title": "An AI crash is our best bet for restricting AI",
+        "url": "https://www.lesswrong.com/posts/ib7aMdyCZvdJYekkJ/an-ai-crash-is-our-best-bet-for-restricting-ai",
+        "year": 2024
+      },
+      {
+        "title": "Pause AI Development?",
+        "url": "https://www.lesswrong.com/posts/hTF9h3ufbSuMuZfwj/pause-ai-development",
+        "year": 2023
+      },
+      {
+        "title": "If you don't feel deeply confused about AGI risk, something's wrong",
+        "url": "https://www.lesswrong.com/posts/wWArLinjvJqozJT8f/if-you-don-t-feel-deeply-confused-about-agi-risk-something-s",
+        "year": 2026
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "label": "C09 · safety, systems, risks",
+    "name": "safety, systems, risks",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "safety",
+      "systems",
+      "risks",
+      "risk",
+      "models",
+      "research",
+      "model",
+      "openai"
+    ],
+    "n": 927,
+    "share": 0.049284916795151255,
+    "representatives": [
+      {
+        "title": "A Different Approach to AI Safety: Proceedings from the Columbia Convening on Openness in Artificial Intelligence and AI Safety",
+        "url": "https://arxiv.org/abs/2506.22183",
+        "year": 2025
+      },
+      {
+        "title": "AI Safety and Neighboring Communities: A Quick-Start Guide, as of Summer 2022",
+        "url": "https://www.alignmentforum.org/posts/EFpQcBmfm2bFfM4zM/ai-safety-and-neighboring-communities-a-quick-start-guide-as",
+        "year": 2022
+      },
+      {
+        "title": "Position: Require Frontier AI Labs To Release Small \"Analog\" Models",
+        "url": "https://arxiv.org/abs/2510.14053",
+        "year": 2025
+      },
+      {
+        "title": "The AI risk repository: A meta-review, database, and taxonomy of risks from artificial intelligence",
+        "url": "https://arxiv.org/abs/2408.12622",
+        "year": 2024
+      },
+      {
+        "title": "The 2025 OpenAI Preparedness Framework does not guarantee any AI risk mitigation practices: a proof-of-concept for affordance analyses of AI safety policies",
+        "url": "https://arxiv.org/abs/2509.24394",
+        "year": 2025
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "label": "C10 · ai safety, research, program",
+    "name": "ai safety, research, program",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "ai safety",
+      "research",
+      "program",
+      "people",
+      "work",
+      "projects",
+      "fellowship",
+      "researchers"
+    ],
+    "n": 873,
+    "share": 0.046413950768249244,
+    "representatives": [
+      {
+        "title": "I made an AI safety fellowship. What I wish I knew.",
+        "url": "https://www.lesswrong.com/posts/88cEgGcSXwFvPms4s/i-made-an-ai-safety-fellowship-what-i-wish-i-knew",
+        "year": 2024
+      },
+      {
+        "title": "Some (potentially) fundable AI Safety Ideas",
+        "url": "https://www.lesswrong.com/posts/FrdZaTyfBgEvPFqN4/some-potentially-fundable-ai-safety-ideas",
+        "year": 2022
+      },
+      {
+        "title": "Thoughts on AI Safety Camp",
+        "url": "https://www.lesswrong.com/posts/3kErRpEprB8iJvnNq/thoughts-on-ai-safety-camp",
+        "year": 2022
+      },
+      {
+        "title": "AI Safety Ideas: A collaborative AI safety research platform",
+        "url": "https://www.lesswrong.com/posts/iAkJ3zzAqgZfwfg3e/ai-safety-ideas-a-collaborative-ai-safety-research-platform",
+        "year": 2022
+      },
+      {
+        "title": "[Part-time AI Safety Research Program] MARS 3.0 Applications Open for Participants & Recruiting Mentors",
+        "url": "https://www.lesswrong.com/posts/gLNPf8Tv6f8nSjJjg/part-time-ai-safety-research-program-mars-3-0-applications",
+        "year": 2025
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "label": "C11 · alignment, human, agent",
+    "name": "alignment, human, agent",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "alignment",
+      "human",
+      "agent",
+      "agents",
+      "systems",
+      "values",
+      "value",
+      "debate"
+    ],
+    "n": 847,
+    "share": 0.04503163379233346,
+    "representatives": [
+      {
+        "title": "AI Alignment through Reinforcement Learning from Human Feedback? Contradictions and Limitations",
+        "url": "https://arxiv.org/abs/2406.18346",
+        "year": 2024
+      },
+      {
+        "title": "Normative Conflicts and Shallow AI Alignment",
+        "url": "https://arxiv.org/abs/2506.04679",
+        "year": 2025
+      },
+      {
+        "title": "Questionnaire Responses Do not Capture the Safety of AI Agents",
+        "url": "https://arxiv.org/abs/2603.14417",
+        "year": 2026
+      },
+      {
+        "title": "Intent-aligned AI systems deplete human agency: the need for agency foundations research in AI safety",
+        "url": "https://arxiv.org/abs/2305.19223",
+        "year": 2023
+      },
+      {
+        "title": "Disentangling AI Alignment: A Structured Taxonomy Beyond Safety and Ethics",
+        "url": "https://arxiv.org/abs/2506.06286",
+        "year": 2025
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "label": "C12 · model, models, training",
+    "name": "model, models, training",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "model",
+      "models",
+      "training",
+      "alignment",
+      "scheming",
+      "misalignment",
+      "misaligned",
+      "control"
+    ],
+    "n": 842,
+    "share": 0.044765803604657345,
+    "representatives": [
+      {
+        "title": "AI Safety at the Frontier: Paper Highlights, June '25",
+        "url": "https://www.lesswrong.com/posts/Kg4dkWdt2q5djxWy3/ai-safety-at-the-frontier-paper-highlights-june-25",
+        "year": 2025
+      },
+      {
+        "title": "Stress Testing Deliberative Alignment for Anti-Scheming Training",
+        "url": "https://arxiv.org/abs/2509.15541",
+        "year": 2025
+      },
+      {
+        "title": "Towards training-time mitigations for alignment faking in RL",
+        "url": "https://www.alignmentforum.org/posts/czMaDFGAbjhWYdKmo/towards-training-time-mitigations-for-alignment-faking-in-rl",
+        "year": 2025
+      },
+      {
+        "title": "The case for ensuring that powerful AIs are controlled",
+        "url": "https://www.alignmentforum.org/posts/kcKrE9mzEHrdqtDpE/the-case-for-ensuring-that-powerful-ais-are-controlled",
+        "year": 2024
+      },
+      {
+        "title": "[CS2881r][Week 8] When Agents Prefer Hacking To Failure: Evaluating Misalignment Under Pressure",
+        "url": "https://www.lesswrong.com/posts/AJANBeJb2p39su6F9/cs2881r-week-8-when-agents-prefer-hacking-to-failure",
+        "year": 2025
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "label": "C13 · people, like, think",
+    "name": "people, like, think",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "people",
+      "like",
+      "think",
+      "just",
+      "world",
+      "don",
+      "book",
+      "time"
+    ],
+    "n": 774,
+    "share": 0.041150513052262215,
+    "representatives": [
+      {
+        "title": "Near-Term Risks of an Obedient Artificial Intelligence",
+        "url": "https://www.lesswrong.com/posts/iM2ujcBohJvoJzjBa/near-term-risks-of-an-obedient-artificial-intelligence",
+        "year": 2023
+      },
+      {
+        "title": "A Bearish Take on AI, as a Treat",
+        "url": "https://www.lesswrong.com/posts/J59hfYefh6yA4wzLD/a-bearish-take-on-ai-as-a-treat",
+        "year": 2025
+      },
+      {
+        "title": "A tentative dialogue with a Friendly-boxed-super-AGI on brain uploads",
+        "url": "https://www.lesswrong.com/posts/2TZwQ9JbshCBpq9DC/a-tentative-dialogue-with-a-friendly-boxed-super-agi-on",
+        "year": 2022
+      },
+      {
+        "title": "We're already in AI takeoff",
+        "url": "https://www.lesswrong.com/posts/LbyxFk8JmPKPAQBvL/we-re-already-in-ai-takeoff",
+        "year": 2022
+      },
+      {
+        "title": "I Think We're Approaching The Bitter Lesson's Asymptote",
+        "url": "https://www.lesswrong.com/posts/F7xySqiEDhJBnRyKL/i-think-we-re-approaching-the-bitter-lesson-s-asymptote",
+        "year": 2023
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "label": "C14 · agent, utility, agents",
+    "name": "agent, utility, agents",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "agent",
+      "utility",
+      "agents",
+      "goal",
+      "function",
+      "corrigibility",
+      "value",
+      "values"
+    ],
+    "n": 718,
+    "share": 0.038173214950289754,
+    "representatives": [
+      {
+        "title": "Deliberation, Reactions, and Control: Tentative Definitions and a Restatement of Instrumental Convergence",
+        "url": "https://www.alignmentforum.org/posts/u4BaLRK6mJJcvycEk/deliberation-reactions-and-control-tentative-definitions-and",
+        "year": 2022
+      },
+      {
+        "title": "Optimization Concepts in the Game of Life",
+        "url": "https://www.alignmentforum.org/posts/mL8KdftNGBScmBcBg/optimization-concepts-in-the-game-of-life",
+        "year": 2021
+      },
+      {
+        "title": "Measuring Coherence and Goal-Directedness in RL Policies",
+        "url": "https://www.lesswrong.com/posts/g5XgjY6x9dz47LgAz/measuring-coherence-and-goal-directedness-in-rl-policies",
+        "year": 2024
+      },
+      {
+        "title": "Aligning AI by optimizing for \"wisdom\"",
+        "url": "https://www.lesswrong.com/posts/AtwPwD6PBsqfpCsHE/aligning-ai-by-optimizing-for-wisdom",
+        "year": 2023
+      },
+      {
+        "title": "From Barriers to Alignment to the First Formal Corrigibility Guarantees",
+        "url": "https://www.alignmentforum.org/posts/M5owRcacptnkxwD2u/from-barriers-to-alignment-to-the-first-formal-corrigibility-1",
+        "year": 2025
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "label": "C15 · llms, models, language",
+    "name": "llms, models, language",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "llms",
+      "models",
+      "language",
+      "model",
+      "value",
+      "llm",
+      "alignment",
+      "human"
+    ],
+    "n": 702,
+    "share": 0.0373225583497262,
+    "representatives": [
+      {
+        "title": "Do LLMs Have Values? A Quantitative Analysis and Alignment Framework for Values in Large Language Models",
+        "url": "https://arxiv.org/abs/2609.16589",
+        "year": 2026
+      },
+      {
+        "title": "Decoding Alignment: A Critical Survey of LLM Development Initiatives through Value-setting and Data-centric Lens",
+        "url": "https://arxiv.org/abs/2508.16982",
+        "year": 2025
+      },
+      {
+        "title": "Beyond Human Norms: Unveiling Unique Values of Large Language Models through Interdisciplinary Approaches",
+        "url": "https://arxiv.org/abs/2404.12744",
+        "year": 2024
+      },
+      {
+        "title": "Evaluating AI Alignment in LLMs: Output Analysis of Value Priorities Across 75 Models with Human Benchmarking",
+        "url": "https://arxiv.org/abs/2506.12617",
+        "year": 2025
+      },
+      {
+        "title": "Comparing Rationality Between Large Language Models and Humans: Insights and Open Questions",
+        "url": "https://arxiv.org/abs/2403.09798",
+        "year": 2024
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "label": "C16 · model, models, language",
+    "name": "model, models, language",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "model",
+      "models",
+      "language",
+      "steering",
+      "reasoning",
+      "activation",
+      "token",
+      "llms"
+    ],
+    "n": 620,
+    "share": 0.03296294327183795,
+    "representatives": [
+      {
+        "title": "Reasoning and learning about injected concepts in language models",
+        "url": "https://www.lesswrong.com/posts/de2qaz6G3qrFZvQqK/reasoning-and-learning-about-injected-concepts-in-language-1",
+        "year": 2026
+      },
+      {
+        "title": "A Universal Emergent Decomposition of Retrieval Tasks in Language Models",
+        "url": "https://www.lesswrong.com/posts/uCuvFKnvzwh34GuX3/a-universal-emergent-decomposition-of-retrieval-tasks-in",
+        "year": 2023
+      },
+      {
+        "title": "Linear Probes Detect Task Format, Not Reasoning Mode in Language Model Hidden States",
+        "url": "https://arxiv.org/abs/2606.02907",
+        "year": 2026
+      },
+      {
+        "title": "On the Generalization of Steering Vectors for Chain-of-Thought Faithfulness",
+        "url": "https://arxiv.org/abs/2607.29062",
+        "year": 2026
+      },
+      {
+        "title": "LLM Post-Training: A Deep Dive into Reasoning Large Language Models",
+        "url": "https://arxiv.org/abs/2502.21321",
+        "year": 2025
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "label": "C17 · openai, anthropic, new",
+    "name": "openai, anthropic, new",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "openai",
+      "anthropic",
+      "new",
+      "altman",
+      "people",
+      "think",
+      "google",
+      "mundane"
+    ],
+    "n": 608,
+    "share": 0.03232495082141528,
+    "representatives": [
+      {
+        "title": "Hot take: The AI safety movement is way too sectarian and this is greatly increasing p(doom)",
+        "url": "https://www.lesswrong.com/posts/FK5ctN989MzADufoM/hot-take-the-ai-safety-movement-is-way-too-sectarian-and",
+        "year": 2024
+      },
+      {
+        "title": "Re: recent Anthropic safety research",
+        "url": "https://www.lesswrong.com/posts/oDX5vcDTEei8WuoBx/re-recent-anthropic-safety-research",
+        "year": 2025
+      },
+      {
+        "title": "Dialogue on the Claim: \"OpenAI's Firing of Sam Altman (And Shortly-Subsequent Events) On Net Reduced Existential Risk From AGI\"",
+        "url": "https://www.lesswrong.com/posts/ahNcJGNtTX8JvMy93/dialogue-on-the-claim-openai-s-firing-of-sam-altman-and",
+        "year": 2023
+      },
+      {
+        "title": "The World Can't Keep Up With AI Labs",
+        "url": "https://www.lesswrong.com/posts/fewDbvpKMZLgGuWT2/the-world-can-t-keep-up-with-ai-labs",
+        "year": 2026
+      },
+      {
+        "title": "Op-Ed: I Worked at Google DeepMind. You Should Listen to the Warnings About AI",
+        "url": "https://www.alignmentforum.org/posts/YGTWfyZb9oE5EQPu6/op-ed-i-worked-at-google-deepmind-you-should-listen-to-the",
+        "year": 2026
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "label": "C18 · llms, llm, language",
+    "name": "llms, llm, language",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "llms",
+      "llm",
+      "language",
+      "model",
+      "models",
+      "like",
+      "text",
+      "gpt"
+    ],
+    "n": 582,
+    "share": 0.030942633845499494,
+    "representatives": [
+      {
+        "title": "An explanation for every token: using an LLM to sample another LLM",
+        "url": "https://www.lesswrong.com/posts/5ZFgZbqp6Mi2xpYjK/an-explanation-for-every-token-using-an-llm-to-sample",
+        "year": 2023
+      },
+      {
+        "title": "Numberwang: LLMs Doing Autonomous Research, and a Call for Input",
+        "url": "https://www.alignmentforum.org/posts/RSqfcyAW9ZkveGQ5u/numberwang-llms-doing-autonomous-research-and-a-call-for-1",
+        "year": 2025
+      },
+      {
+        "title": "Large Language Models Live in Time",
+        "url": "https://www.lesswrong.com/posts/JGPBedTtnn9yHqxMu/large-language-models-live-in-time",
+        "year": 2026
+      },
+      {
+        "title": "We Need To Know About Continual Learning",
+        "url": "https://www.lesswrong.com/posts/nxcRxWtiNiTZX29Ek/we-need-to-know-about-continual-learning",
+        "year": 2023
+      },
+      {
+        "title": "A Technique of Pure Reason",
+        "url": "https://www.lesswrong.com/posts/qSgcmfv8nxZyYofNb/a-technique-of-pure-reason",
+        "year": 2025
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "label": "C19 · theory, natural, decision",
+    "name": "theory, natural, decision",
+    "summary": "",
+    "llm": false,
+    "keywords": [
+      "theory",
+      "natural",
+      "decision",
+      "post",
+      "agent",
+      "problem",
+      "elk",
+      "theorem"
+    ],
+    "n": 498,
+    "share": 0.026476686692540805,
+    "representatives": [
+      {
+        "title": "Elementary Infra-Bayesianism",
+        "url": "https://www.alignmentforum.org/posts/9uj2Mto9CNdWZudyq/elementary-infra-bayesianism",
+        "year": 2022
+      },
+      {
+        "title": "Conjecture: Emergent φ is provable in Large Language Models",
+        "url": "https://www.lesswrong.com/posts/xjQuapepRm2sGF82e/conjecture-emergent-f-is-provable-in-large-language-models",
+        "year": 2025
+      },
+      {
+        "title": "Infra-Bayesianism Unwrapped",
+        "url": "https://www.alignmentforum.org/posts/Zi7nmuSmBFbQWgFBa/infra-bayesianism-unwrapped",
+        "year": 2021
+      },
+      {
+        "title": "Contrapositive Natural Abstraction - Project Intro",
+        "url": "https://www.lesswrong.com/posts/H9duMiE7sjJhC2pcX/contrapositive-natural-abstraction-project-intro",
+        "year": 2024
+      },
+      {
+        "title": "Natural Abstractions: Key Claims, Theorems, and Critiques",
+        "url": "https://www.alignmentforum.org/posts/gvzW46Z3BsaZsLc25/natural-abstractions-key-claims-theorems-and-critiques-1",
+        "year": 2023
+      }
+    ]
+  }
+]

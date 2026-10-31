@@ -4,16 +4,61 @@
 `alignmap` maps the alignment literature across venues (Alignment Forum, LessWrong, EA Forum, arXiv, blogs) and tests, with uncertainty, which subfields gained or lost share between two periods, without letting a change in *where* people publish pass as a change in *what* they study.
 
 <p align="center">
-  <img src="docs/demo_shift.png" alt="Bars: source-adjusted change in share per cluster on a synthetic corpus; diamonds: the unadjusted pooled estimate" width="820"><br>
-  <sub>Output of <code>alignmap demo</code> on a <b>synthetic</b> corpus built so that the venue mix drifts (20% → 70% papers) while topics inside each venue barely change.
-  The pooled estimate (diamonds) reports a spurious rise of the interpretability-like cluster; the source-adjusted estimate (bars) does not, and flags only the two clusters that really moved.</sub>
+  <img src="docs/results_shift.png" alt="Bars: source-adjusted change in each cluster's share between 2021-2022 and 2025-2026, with Bonferroni intervals; diamonds: the unadjusted pooled estimate" width="820"><br>
+  <sub>Change in each subfield's share of 18,809 Alignment Forum, LessWrong and arXiv documents, 2025–2026 vs 2021–2022 (data retrieved 30 October 2026; 2026 covers January–October).
+  Bars are source-adjusted, with Bonferroni-corrected bootstrap intervals; colour means the interval excludes zero. Diamonds are the unadjusted pooled estimate. Full report: <a href="results/main-k20/report.md"><code>results/main-k20/report.md</code></a>.</sub>
 </p>
 
 ## Status
 
-v0.2. The pipeline, 100+ offline tests and a ground-truth check on synthetic data are done.
-**No results on the real literature are published here yet.** The commands in *Quick start* produce them; until `results/` is filled in, nothing below should be read as a finding about alignment research.
-In particular, whether the modern methods agree better with human topic labels than the 2022-style pipeline is an empirical question that `alignmap compare` answers on your data; it is not assumed anywhere.
+v0.2. Pipeline, 150+ offline tests, a ground-truth check on synthetic data, and a **first run on the real literature** (below, October 2026).
+The results are one run of one configuration with one seed, plus a robustness run with a second clustering method. Read them as a first map, with the caveats listed under *Results*, not as settled facts about the field.
+
+## Results (October 2026)
+
+**Corpus.** 18,809 documents from January 2021 to October 2026, after de-duplication of cross-posts: 11,960 LessWrong posts that are about AI (by tag or title), 3,062 Alignment Forum posts, and 3,787 arXiv abstracts found with a fixed list of alignment search terms. The EA Forum is not included: at the time of retrieval its API answered automated requests with a bot challenge. The baseline period is 2021–2022 (2,872 documents), the recent period 2025–2026 (9,782).
+
+**Main run.** BGE-small embeddings → UMAP (10 d) → k-means with k = 20, every document assigned to a cluster. This configuration agrees best with the forum authors' own topic tags in the like-for-like comparison below. A second run with HDBSCAN instead of k-means ([`results/main-hdbscan`](results/main-hdbscan/report.md)) serves as a robustness check; the findings listed here hold in both runs.
+
+What changed, within venues (source-adjusted; shares are of all documents in a period):
+
+- **Agent foundations and decision theory shrank the most.** The cluster on agents, utility functions and goal-directedness fell from 7.5% to 1.9%, and the one on decision theory, natural abstractions, infra-Bayesianism and ELK from 6.0% to 1.5%. Both now hold about a quarter of their earlier share (log₂ ≈ −2; the HDBSCAN run gives 4.4% → 0.9%).
+- **General discussion of "the alignment problem" and of research strategy shrank** from 12.8% to 3.6% (HDBSCAN: 8.5% → 2.2%).
+- **Empirical safety work on current models grew.** A cluster on the safety of language and reasoning models (evaluations, emergent misalignment, chain of thought) went from 2.5% to 9.3%, and one on scheming, alignment faking and AI control from 2.1% to 6.5%. The HDBSCAN run isolates chain-of-thought monitoring on its own: 0.2% → 1.9%, the largest relative rise in either run.
+- **Writing about the labs themselves** (OpenAI, Anthropic) grew from 0.9% to 4.0%, and safety policy, governance and advocacy from 3.0% to 5.2%.
+- **Interpretability kept a roughly constant share** (7.6% → 8.6%, interval includes zero; HDBSCAN 8.2% → 8.6%). Its absolute volume grew with the field, but not faster than the field.
+- **RLHF and preference learning look like a composition effect.** Pooled over venues the cluster seems to grow strongly (log₂ +2.8); within venues the change is small and not significant (+0.7, interval [−0.03, +1.83]). Most of the apparent growth comes from arXiv, where RLHF papers are common, taking a larger share of the corpus over time. This is the kind of artefact the source adjustment exists to catch.
+
+**Method comparison.** All three embedders with the same clustering (k-means, k = 20) and the same 18,809 documents, scored on the 6,482 tagged forum posts ([`results/compare-k20`](results/compare-k20/compare.md); configuration in [`configs/fair-k20.json`](configs/fair-k20.json)):
+
+| Embedding (→ UMAP → k-means, k = 20) | Tag agreement (AMI) | V-measure | Stability (ARI) |
+|---|---:|---:|---:|
+| TF-IDF + LSA, no neural model, no UMAP | 0.257 | 0.268 | 0.61 |
+| SPECTER, the embedder of the 2022 analysis | 0.235 | 0.245 | 0.64 |
+| BGE-small, general-purpose | **0.298** | **0.309** | 0.62 |
+
+On this forum-heavy corpus the general-purpose embedder matches the authors' own topic tags best. SPECTER, which was trained on citation links between scientific papers, does slightly worse than plain bag-of-words here. The differences are moderate and come from one seed; they have not yet been checked across seeds.
+
+The comparison at each preset's own settings ([`results/compare-presets`](results/compare-presets/compare.md)) shows why the like-for-like version is needed: the 2022-style arm with k = 5 scores 0.169, partly because five clusters cannot match thirty tags, and HDBSCAN scores 0.410 but leaves 59% of documents unassigned and is scored only on the 39% of tagged posts it does cluster.
+
+**Caveats specific to this run.**
+- arXiv coverage before 2023 is thin (93 abstracts in 2021–2022), because keyword search finds few papers before the field's vocabulary settled. The intervals for the papers group are wide as a result.
+- The LessWrong set is the AI-related part of LessWrong as decided by tags and titles, which is a choice; 2026 covers ten months.
+- Cluster names are the top c-TF-IDF keywords; the descriptions above are mine, written from those keywords and the representative titles listed in the reports.
+- A few reference tags are not topics (`MATS Program`, `Fiction`, `OpenAI`); they lower every arm's agreement score by a similar amount but are worth removing in the next version.
+
+To reproduce:
+
+```bash
+alignmap fetch --years 2021-2026 --out data/arxiv
+alignmap fetch-forum --years 2021-2026 --out data/forums
+alignmap run --input data/arxiv data/forums --out results/main-k20 --preset modern-fast --clusterer kmeans --k 20 \
+    --drop-tags Newsletters --cache-dir .cache
+alignmap compare --input data/arxiv data/forums --out results/compare-k20 --configs configs/fair-k20.json \
+    --drop-tags Newsletters --cache-dir .cache
+```
+
+The forums and arXiv keep changing, so a fresh fetch will not give identical numbers; `run.json` records the SHA-256 of every input file used here. On a 4-vCPU machine without a GPU, embedding the corpus took about an hour with BGE-small and about four hours with SPECTER; everything else takes minutes once embeddings are cached.
 
 ## Why
 
@@ -115,6 +160,13 @@ JSONL sources ─► clean, de-duplicate ─► embed ─► (UMAP) ─► clust
 
 `pytest` runs offline. The key checks use **synthetic corpora with known structure** (`alignmap.toy`), always bannered as synthetic in reports:
 
+<p align="center">
+  <img src="docs/demo_shift.png" alt="Bars: source-adjusted change in share per cluster on a synthetic corpus; diamonds: the unadjusted pooled estimate" width="700"><br>
+  <sub>Output of <code>alignmap demo</code> on a <b>synthetic</b> corpus built so that the venue mix drifts (20% → 70% papers) while topics inside each venue barely change.
+  The pooled estimate (diamonds) reports a spurious rise of the interpretability-like cluster; the source-adjusted estimate (bars) does not, and flags only the two clusters that really moved.</sub>
+</p>
+
+
 - *Planted trend*: interpretability 10% → 40%, agent foundations 35% → 5%, RLHF and governance flat. The pipeline must recover the right clusters, signs and magnitudes and must not flag the flat ones.
 - *Composition drift*: two venues with different topic mixes and a venue mix that drifts. Inside each venue only two topics really change. The pooled analysis must be fooled (a spurious rise), the source-adjusted one must not, and it must still detect the two real changes.
 
@@ -128,12 +180,13 @@ Other tests cover corpus cleaning and de-duplication, HDBSCAN and UMAP behaviour
 - **Embedding choices matter and are untuned.** The HDBSCAN default (1% of papers) and the UMAP settings are starting points; rerun with other settings before reading a story into one cluster. Intervals reflect sampling of papers only, not the choice of method.
 - **The `2022-style` arm is a reconstruction**, with the UMAP dimension assumed.
 - **Corpus boundaries.** Coverage and update dates differ by source; work outside these venues is not seen. The forum AI filter (tags or title) and the arXiv search terms decide what counts as "alignment", and the same arXiv term list is used for every year on purpose, so a subfield cannot look new just because of how the corpus was queried.
-- **Live fetching is lightly tested.** The fetchers are tested against fake servers and checked by hand on a few queries of the real forums, not over a full crawl; check `manifest_forums.json` and the coverage table of each run.
+- **Live fetching depends on the sites.** The fetchers are tested against fake servers and were used for the October 2026 crawl of LessWrong and the Alignment Forum (the servers cap paging offsets, which the fetcher works around with date windows); the EA Forum refused automated requests at that time. Check `manifest_forums.json` and the coverage table of each run.
 - **LLM names are unverified paraphrases** and have not been validated against human labels.
 
 ## Roadmap
 
-- Publish the real-data results and the comparison table.
+- Repeat the run and the comparison over several seeds and report the spread; drop non-topic tags from the reference set.
+- Add the EA Forum (if its API becomes reachable) and a broader arXiv sample (category- or citation-based rather than keyword-based).
 - Soft cluster membership and hierarchical views, instead of one label per paper.
 - A relevance classifier to find alignment work outside the keyword net.
 - Author and venue communities per subfield; validate LLM names against human labels.

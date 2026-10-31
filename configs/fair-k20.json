@@ -1,0 +1,5 @@
+{
+  "lsa k=20": {"embedder": "tfidf", "reducer": "none", "clusterer": "kmeans", "k": 20},
+  "specter UMAP k=20": {"embedder": "sbert", "sbert_model": "sentence-transformers/allenai-specter", "doc_format": "specter", "max_seq_length": 512, "reducer": "umap", "umap_neighbors": 250, "umap_components": 5, "clusterer": "kmeans", "k": 20},
+  "bge-small UMAP k=20": {"embedder": "sbert", "sbert_model": "BAAI/bge-small-en-v1.5", "max_seq_length": 512, "reducer": "umap", "umap_neighbors": 30, "umap_components": 10, "clusterer": "kmeans", "k": 20}
+}
